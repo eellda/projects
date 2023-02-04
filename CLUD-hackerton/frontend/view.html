@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <style>
+    #form-control {
+      width: 50px;
+    }
+    #sec1, #sec2, #sec5, #sec6 {
+      width: 220px;
+    }
+
+    #sec5, #sec6 {
+      display: inline-block;
+    }
+
+    #sec3 {
+      width: 300px;
+    }
+
+    #sec4, #sec7 {
+      width: 700px;
+    }
+
+    #border{
+      border: 1px black solid;
+      border-radius: 7px;
+      margin-left: 10px;
+    }
+
+    #input {
+      border: 3px black solid;
+      border-radius: 7px;
+      margin-left: 10px;
+    }
+
+  </style>
+  <title>Document</title>
+</head>
+<body>
+<h1>택배 상세 조회</h1>
+
+<section id="sec1">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-no">번호</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<section id="sec2">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-name">이름</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<section id="sec3">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-tel">전화번호</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<section id="sec4">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-addr">주소</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<section id="sec5">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-paym">결제 방식</span>
+    <select name="level" id="f-level" class="form-control">
+      <option value="0">무료배송</option>
+      <option value="1">선불</option>
+      <option value="2">착불</option>
+    </select>
+  </div><br>
+</section>
+
+<section id="sec6">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-status">배송 상태</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<section id="sec7">
+  <div class="input-group flex-nowrap" id="border">
+    <span class="input-group-text" id="d-msg">배송 메세지</span>
+    <input type="text" class="form-control" readonly>
+  </div><br>
+</section>
+
+<button type="button" id="input">처음으로</button>
+<button id="update-btn" type="button">변경</button>
+<button id="delete-btn" type="button">삭제</button>
+<button id="list-btn" type="button">목록</button>
+
+<script>
+
+fetch(`http://localhost:8080/delivery`)
+  .then((response) => response.json())
+  .then((obj) => {
+    if (obj.status == "failure") {
+      alert("서버 요청 오류!");
+      console.log(obj.data);
+      return;
+    }
+    
+    document.querySelector("#f-no").value = obj.data.no;
+    document.querySelector('#f-name').value = obj.data.name;
+    document.querySelector('#f-tel').value = obj.data.tel;
+    document.querySelector('#f-addr').value = obj.data.addr;
+    document.querySelector('#f-paym').value = obj.data.paym;
+    document.querySelector('#f-status').value = obj.data.status;
+    document.querySelector('#f-msg').value = obj.data.msg;
+    if (obj.data.gender == 'W') {
+      document.querySelector("#f-gender-W").checked = true; 
+    } else {
+      document.querySelector("#f-gender-M").checked = true;
+    }
+    document.querySelector("#f-level").value = obj.data.level;
+    document.querySelector("#f-createdDate").innerHTML = obj.data.createdDate;
+  })
+  .catch((err) => {
+    alert("서버 요청 오류!");
+    console.log(err)
+  });
+
+  document.querySelector('#update-btn').onclick = (e) => {
+    var name = encodeURIComponent(document.querySelector('#f-name').value);
+    var tel = document.querySelector('#f-tel').value;
+    var addr = encodeURIComponent(document.querySelector('#f-addr').value);
+    var paym = document.querySelector('#f-paym').value;
+    var status = document.querySelector('#f-status').value;
+    var msg = encodeURIComponent(document.querySelector('#f-msg').value);
+
+  fetch(`http://localhost:8080/delivery/${no}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    body: `name=${name}&tel=${tel}&addr=${addr}&paym=${paym}&status=${status}&msg=${msg}`
+  })
+  .then((response) => response.json())
+  .then((obj) => {
+    if (obj.status == "failure") {
+      alert("택배 정보 변경 오류!\n" + obj.data);
+      return;
+    }
+
+    location.href = "list.html";
+  })
+  .catch((err) => {
+    alert("서버 요청 오류!");
+    console.log(err);
+  });
+};
+
+document.querySelector('#delete-btn').onclick = (e) => {
+
+fetch(`http://localhost:8080/delivery/${no}`, {
+  method: 'DELETE'
+})
+.then((response) => response.json())
+.then((obj) => {
+  if (obj.status == "failure") {
+    alert("택배 삭제 오류!\n" + obj.data);
+    return;
+  }
+
+  location.href = "list.html";
+})
+.catch((err) => {
+  alert("서버 요청 오류!");
+  console.log(err);
+});
+};
+
+document.querySelector('#input').onclick = (e) => {
+  location.href = "index.html";
+};
+
+</script>
+</body>
+</html>

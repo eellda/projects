@@ -3,11 +3,14 @@ package bitcamp.myapp.dao;
 import java.util.Arrays;
 
 public abstract class ObjectDao {
-	private final int SIZE = 100;
+	private final int SIZE = 3;
 	private int count;
 	protected Object[] objects = new Object[SIZE];
 
 	public void insert(Object object) {
+		if (count == SIZE) {
+			throw new DaoException("저장 갯수가 max");
+		}
 		this.objects[count++] = object;
 	}
 
@@ -34,7 +37,7 @@ public abstract class ObjectDao {
 
 	public Object get(int i) {
 		if (i < 0 || i >= this.count) {
-			return null;
+			throw new DaoException("index가 무효!");
 		}
 		return objects[i];
 	}

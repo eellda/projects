@@ -5,11 +5,9 @@ import bitcamp.myapp.util.Prompt;
 import bitcamp.myapp.vo.Board;
 
 public class BoardHandler {
-
 	private BoardDao boardDao = new BoardDao();
 	private String title;
 
-	// 인스턴스를 만들 때 프롬프트 제목을 반드시 입력하도록 강제한다.
 	public BoardHandler(String title) {
 		this.title = title;
 	}
@@ -19,13 +17,11 @@ public class BoardHandler {
 		b.setTitle(Prompt.inputString("제목? "));
 		b.setContent(Prompt.inputString("내용? "));
 		b.setPassword(Prompt.inputString("암호? "));
-
 		this.boardDao.insert(b);
 	}
 
 	private void printBoards() {
 		System.out.println("번호\t제목\t작성일\t조회수");
-
 		Board[] boards = this.boardDao.findAll();
 
 		for (Board b : boards) {
@@ -36,7 +32,6 @@ public class BoardHandler {
 
 	private void printBoard() {
 		int boardNo = Prompt.inputInt("게시글 번호? ");
-
 		Board b = this.boardDao.findByNo(boardNo);
 
 		if (b == null) {
@@ -53,7 +48,6 @@ public class BoardHandler {
 
 	private void modifyBoard() {
 		int boardNo = Prompt.inputInt("게시글 번호? ");
-
 		Board old = this.boardDao.findByNo(boardNo);
 
 		if (old == null) {
@@ -105,16 +99,12 @@ public class BoardHandler {
 			System.out.println("삭제 취소했습니다.");
 			return;
 		}
-
 		this.boardDao.delete(b);
-
 		System.out.println("삭제했습니다.");
-
 	}
 
 	private void searchBoard() {
 		Board[] boards = this.boardDao.findAll();
-
 		String keyword = Prompt.inputString("검색어? ");
 		System.out.println("번호\t제목\t작성일\t조회수");
 

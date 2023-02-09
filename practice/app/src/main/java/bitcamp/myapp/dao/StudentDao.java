@@ -12,7 +12,7 @@ public class StudentDao  {
 	public void insert(Student s) {
 		s.setNo(++lastNo);
 		s.setCreatedDate(new Date(System.currentTimeMillis()).toString());
-		list.append(s);
+		list.add(s);
 	}
 
 	public String getLevelText(int level) {
@@ -36,7 +36,7 @@ public class StudentDao  {
 
 	public Student[] findAll() {
 		Student[] students = new Student[list.size()];
-		Object[] arr = list.getList();
+		Object[] arr = list.toArray();
 
 		for (int i = 0; i < students.length; i++) {
 			students[i] = (Student) arr[i];
@@ -46,10 +46,10 @@ public class StudentDao  {
 
 	public void update(Student s) {
 		int index = list.indexOf(s);
-		list.modify(index, s);
+		list.set(index, s);
 	}
 
 	public boolean delete(Student s) {
-		return list.delete(s);
+		return list.remove(s);
 	}
 }

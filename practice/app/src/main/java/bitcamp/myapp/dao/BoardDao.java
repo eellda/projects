@@ -7,7 +7,6 @@ import bitcamp.myapp.vo.Board;
 
 public class BoardDao {
 	LinkedList list = new LinkedList();
-
 	int lastNo;
 
 	public void insert(Board board) {
@@ -33,7 +32,6 @@ public class BoardDao {
 		if (index == -1) {
 			return null;
 		}
-
 		return (Board) list.get(index);
 	}
 

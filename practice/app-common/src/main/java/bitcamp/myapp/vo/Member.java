@@ -1,5 +1,6 @@
 package bitcamp.myapp.vo;
 
+import java.sql.Date;
 import java.util.Objects;
 
 public class Member implements java.io.Serializable {
@@ -7,13 +8,22 @@ public class Member implements java.io.Serializable {
 
   private int no;
   private String name;
+  private String email;
   private String tel;
-  private String createdDate;
+  private Date createdDate;
+  private String password;
+
+  @Override
+  public String toString() {
+    return "Member [no=" + no + ", name=" + name + ", email=" + email + ", tel=" + tel
+        + ", createdDate=" + createdDate + ", password=" + password + "]";
+  }
 
   @Override
   public int hashCode() {
     return Objects.hash(no);
   }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -25,6 +35,7 @@ public class Member implements java.io.Serializable {
     Member other = (Member) obj;
     return no == other.no;
   }
+
 
   public int getNo() {
     return no;
@@ -38,18 +49,29 @@ public class Member implements java.io.Serializable {
   public void setName(String name) {
     this.name = name;
   }
+  public String getEmail() {
+    return email;
+  }
+  public void setEmail(String email) {
+    this.email = email;
+  }
   public String getTel() {
     return tel;
   }
   public void setTel(String tel) {
     this.tel = tel;
   }
-  public String getCreatedDate() {
+  public Date getCreatedDate() {
     return createdDate;
   }
-  public void setCreatedDate(String createdDate) {
+  public void setCreatedDate(Date createdDate) {
     this.createdDate = createdDate;
   }
-
+  public String getPassword() {
+    return password;
+  }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
 }

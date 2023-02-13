@@ -1,17 +1,23 @@
 package bitcamp.myapp.handler;
 
+import java.sql.Connection;
+import bitcamp.myapp.dao.MemberDao;
 import bitcamp.myapp.dao.StudentDao;
 import bitcamp.myapp.vo.Student;
 import bitcamp.util.StreamTool;
 
 public class StudentHandler {
 
-  private StudentDao memberDao;
+  private StudentDao studentDao;
+  private MemberDao memberDao;
+  private Connection con;
   private String title;
 
-  public StudentHandler(String title, StudentDao memberDao) {
+  public StudentHandler(String title, Connection con, MemberDao memberDao, StudentDao studentDao) {
     this.title = title;
+    this.studentDao = studentDao;
     this.memberDao = memberDao;
+    this.con = con;
   }
 
   private void inputMember(StreamTool streamTool) throws Exception {

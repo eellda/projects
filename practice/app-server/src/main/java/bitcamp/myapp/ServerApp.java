@@ -6,9 +6,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import bitcamp.myapp.dao.JdbcBoardDao;
-import bitcamp.myapp.dao.JdbcStudentDao;
-import bitcamp.myapp.dao.JdbcTeacherDao;
+import bitcamp.myapp.dao.impl.BoardDaoImpl;
+import bitcamp.myapp.dao.impl.StudentDaoImpl;
+import bitcamp.myapp.dao.impl.TeacherDaoImpl;
 import bitcamp.myapp.handler.BoardHandler;
 import bitcamp.myapp.handler.HelloHandler;
 import bitcamp.myapp.handler.StudentHandler;
@@ -36,9 +36,9 @@ public class ServerApp {
     this.con = DriverManager.getConnection(
         "jdbc:mariadb://localhost:3306/studydb", "study", "1111");
 
-    JdbcBoardDao boardDao = new JdbcBoardDao(con);
-    JdbcStudentDao studentDao = new JdbcStudentDao(con);
-    JdbcTeacherDao teacherDao = new JdbcTeacherDao(con);
+    BoardDaoImpl boardDao = new BoardDaoImpl(con);
+    StudentDaoImpl studentDao = new StudentDaoImpl(con);
+    TeacherDaoImpl teacherDao = new TeacherDaoImpl(con);
 
     this.studentHandler = new StudentHandler("학생", studentDao);
     this.teacherHandler = new TeacherHandler("강사", teacherDao);

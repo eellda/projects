@@ -138,7 +138,7 @@ public class StudentDaoImpl implements StudentDao {
                 + " s.work,"
                 + " s.level"
                 + " from app_student s"
-                + "     inner join on app_member m on s.member_id = m.member_id"
+                + "     inner join app_member m on s.member_id = m.member_id"
                 + " where"
                 + "     m.name like('%" + keyword + "%')"
                 + "     or m.tel like('%" + keyword + "%')"

@@ -1,7 +1,5 @@
 package bitcamp.myapp.dao.impl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -9,19 +7,20 @@ import java.util.List;
 import bitcamp.myapp.dao.DaoException;
 import bitcamp.myapp.dao.TeacherDao;
 import bitcamp.myapp.vo.Teacher;
+import bitcamp.util.ConnectionFactory;
 
 public class TeacherDaoImpl implements TeacherDao {
 
-  Connection con;
+  ConnectionFactory conFactory;
 
   // 의존객체 Connection 을 생성자에서 받는다.
-  public TeacherDaoImpl(Connection con) {
-    this.con = con;
+  public TeacherDaoImpl(ConnectionFactory conFactory) {
+    this.conFactory = conFactory;
   }
 
   @Override
   public void insert(Teacher s) {
-    try (Statement stmt = con.createStatement()) {
+    try (Statement stmt = conFactory.getConnection().createStatement()) {
 
       String sql = String.format(
           "insert into app_teacher(member_id, degree, school, major, wage)"
@@ -41,7 +40,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
   @Override
   public List<Teacher> findAll() {
-    try (Statement stmt = con.createStatement();
+    try (Statement stmt = conFactory.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(
             "select m.member_id, m.name, m.tel, t.degree, t.major, t.wage"
                 + " from app_teacher t"
@@ -71,7 +70,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
   @Override
   public Teacher findByNo(int no) {
-    try (Statement stmt = con.createStatement();
+    try (Statement stmt = conFactory.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(
             "select m.member_id, m.name, m.tel, m.created_date, m.email, t.degree, t.school, t.major, t.wage"
                 + " from app_teacher t"
@@ -101,7 +100,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
   @Override
   public int update(Teacher t) {
-    try (Statement stmt = con.createStatement()) {
+    try (Statement stmt = conFactory.getConnection().createStatement()) {
 
       String sql = String.format(
           "update app_teacher set "
@@ -126,7 +125,7 @@ public class TeacherDaoImpl implements TeacherDao {
   @Override
   public int delete(int no) {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Statement stmt = conFactory.getConnection().createStatement()) {
 
       String sql = String.format("delete from app_teacher where member_id=%d", no);
       return stmt.executeUpdate(sql);
@@ -136,40 +135,40 @@ public class TeacherDaoImpl implements TeacherDao {
     }
   }
 
-  public static void main(String[] args) throws Exception {
-    Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-    TeacherDaoImpl dao = new TeacherDaoImpl(con);
+  //  public static void main(String[] args) throws Exception {
+  //    Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+  //    TeacherDaoImpl dao = new TeacherDaoImpl(con);
 
-    //    Teacher s = new Teacher();
-    //    s.setNo(39);
-    //    s.setDegree(3);
-    //    s.setSchool("세종 대학교");
-    //    s.setMajor("소프트웨어 공학과");
-    //    s.setWage(25000);
-    //    dao.insert(s);
-    //    System.out.println(s);
-
-
-    //    List<Teacher> list = dao.findAll();
-    //    for (Teacher s :list) {
-    //      System.out.println(s);
-    //    }
+  //    Teacher s = new Teacher();
+  //    s.setNo(39);
+  //    s.setDegree(3);
+  //    s.setSchool("세종 대학교");
+  //    s.setMajor("소프트웨어 공학과");
+  //    s.setWage(25000);
+  //    dao.insert(s);
+  //    System.out.println(s);
 
 
-    //    Teacher s = dao.findByNo(39);
-    //    System.out.println(s);
+  //    List<Teacher> list = dao.findAll();
+  //    for (Teacher s :list) {
+  //      System.out.println(s);
+  //    }
 
 
-    //    Teacher s = new Teacher();
-    //    s.setNo(39);
-    //    s.setDegree(2);
-    //    s.setSchool("국민 대학교");
-    //    s.setMajor("컴퓨터 공학과");
-    //    s.setWage(22500);
-    //    System.out.println(dao.update(s));
+  //    Teacher s = dao.findByNo(39);
+  //    System.out.println(s);
 
-    //    System.out.println(dao.delete(30));
-  }
+
+  //    Teacher s = new Teacher();
+  //    s.setNo(39);
+  //    s.setDegree(2);
+  //    s.setSchool("국민 대학교");
+  //    s.setMajor("컴퓨터 공학과");
+  //    s.setWage(22500);
+  //    System.out.println(dao.update(s));
+
+  //    System.out.println(dao.delete(30));
+  //  }
 }
 
 

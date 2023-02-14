@@ -1,5 +1,6 @@
 package bitcamp.myapp.handler;
 
+import java.util.List;
 import bitcamp.myapp.dao.TeacherDao;
 import bitcamp.myapp.vo.Teacher;
 import bitcamp.util.StreamTool;
@@ -31,7 +32,7 @@ public class TeacherHandler {
 
   private void printTeachers(StreamTool streamTool) throws Exception {
 
-    Object[] teachers = this.teacherDao.findAll();
+    List<Teacher> teachers = this.teacherDao.findAll();
 
     streamTool.println("번호\t이름\t전화\t학위\t전공\t시강료");
 
@@ -126,8 +127,7 @@ public class TeacherHandler {
       streamTool.println("삭제 취소했습니다.").send();
       return;
     }
-
-    teacherDao.delete(m);
+    teacherDao.delete(teacherNo);
 
     streamTool.println("삭제했습니다.").send();
 

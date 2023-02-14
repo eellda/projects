@@ -1,31 +1,33 @@
 package bitcamp.util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 
 public class ConnectionFactory {
-  String jdbcUrl;
-  String username;
-  String password;
+  ConnectionPool connectionPool;
   ThreadLocal<Connection> conLocal = new ThreadLocal<>();
 
-  public ConnectionFactory(String jdbcUrl, String username, String password) {
-    this.jdbcUrl = jdbcUrl;
-    this.username = username;
-    this.password = password;
+  public ConnectionFactory(ConnectionPool connectionPool) {
+    this.connectionPool = connectionPool;
   }
 
   public Connection getConnection() throws Exception {
     Connection con = conLocal.get();
 
     if (con == null) {
-      con = DriverManager.getConnection(jdbcUrl, username, password);
+      con = connectionPool.getConnection();
       conLocal.set(con);
-      System.out.printf("[%s] Connection 객체 생성됨!\n", Thread.currentThread().getName());
     }
 
     System.out.printf("[%s] Connection 객체 리턴!\n", Thread.currentThread().getName());
     return con;
   }
 
+  public void closeConnectino() {
+    Connection con = conLocal.get();
+
+    if (con != null) {
+      connectionPool.returnConnection(con);
+      System.out.printf("[%s] 커넥셤 객체 반납완료.\n", Thread.currentThread().getName());
+    }
+  }
 }

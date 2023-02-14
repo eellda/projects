@@ -5,20 +5,21 @@ import java.util.List;
 import bitcamp.myapp.dao.MemberDao;
 import bitcamp.myapp.dao.StudentDao;
 import bitcamp.myapp.vo.Student;
+import bitcamp.util.ConnectionFactory;
 import bitcamp.util.StreamTool;
 
 public class StudentHandler {
 
   private StudentDao studentDao;
   private MemberDao memberDao;
-  private Connection con;
+  private ConnectionFactory conFactory;
   private String title;
 
-  public StudentHandler(String title, Connection con, MemberDao memberDao, StudentDao studentDao) {
+  public StudentHandler(String title, ConnectionFactory conFactory, MemberDao memberDao, StudentDao studentDao) {
     this.title = title;
     this.studentDao = studentDao;
     this.memberDao = memberDao;
-    this.con = con;
+    this.conFactory = conFactory;
   }
 
   private void inputMember(StreamTool streamTool) throws Exception {
@@ -34,6 +35,7 @@ public class StudentHandler {
     m.setGender(streamTool.promptInt("0. 남자\n1. 여자\n성별? ") == 0 ? 'M' : 'W');
     m.setLevel((byte) streamTool.promptInt("0. 비전공자\n1. 준전공자\n2. 전공자\n전공? "));
 
+    Connection con = conFactory.getConnection();
     con.setAutoCommit(false);
 
     try {
@@ -126,6 +128,8 @@ public class StudentHandler {
     String str = streamTool.promptString("정말 변경하시겠습니까?(y/N) ");
 
     if (str.equalsIgnoreCase("Y")) {
+
+      Connection con = conFactory.getConnection();
       con.setAutoCommit(false);
 
       try {
@@ -164,6 +168,7 @@ public class StudentHandler {
       return;
     }
 
+    Connection con = conFactory.getConnection();
     con.setAutoCommit(false);
 
     try {

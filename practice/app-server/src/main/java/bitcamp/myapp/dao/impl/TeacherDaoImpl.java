@@ -1,9 +1,11 @@
 package bitcamp.myapp.dao.impl;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import bitcamp.myapp.dao.DaoException;
 import bitcamp.myapp.dao.TeacherDao;
 import bitcamp.myapp.vo.Teacher;
@@ -22,11 +24,9 @@ public class TeacherDaoImpl implements TeacherDao {
     try (Statement stmt = con.createStatement()) {
 
       String sql = String.format(
-          "insert into app_teacher(name, tel, email, degree, school, major, wage)"
-              + " values('%s','%s','%s',%d,'%s','%s',%d)",
-              s.getName(),
-              s.getTel(),
-              s.getEmail(),
+          "insert into app_teacher(member_id, degree, school, major, wage)"
+              + " values(%d, %d, '%s', '%s', %d)",
+              s.getNo(),
               s.getDegree(),
               s.getSchool(),
               s.getMajor(),
@@ -40,17 +40,19 @@ public class TeacherDaoImpl implements TeacherDao {
   }
 
   @Override
-  public Teacher[] findAll() {
+  public List<Teacher> findAll() {
     try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
-            "select teacher_id, name, tel, degree, major, wage"
-                + " from app_teacher"
-                + " order by teacher_id desc")) {
+            "select m.member_id, m.name, m.tel, t.degree, t.major, t.wage"
+                + " from app_teacher t"
+                + " inner join app_member m on t.member_id = m.member_id"
+                + " order by m.name desc")) {
 
       ArrayList<Teacher> list = new ArrayList<>();
+
       while (rs.next()) {
         Teacher s = new Teacher();
-        s.setNo(rs.getInt("teacher_id"));
+        s.setNo(rs.getInt("member_id"));
         s.setName(rs.getString("name"));
         s.setTel(rs.getString("tel"));
         s.setDegree(rs.getInt("degree"));
@@ -60,10 +62,7 @@ public class TeacherDaoImpl implements TeacherDao {
         list.add(s);
       }
 
-      Teacher[] arr = new Teacher[list.size()];
-      list.toArray(arr);
-
-      return arr;
+      return list;
 
     } catch (Exception e) {
       throw new DaoException(e);
@@ -74,13 +73,14 @@ public class TeacherDaoImpl implements TeacherDao {
   public Teacher findByNo(int no) {
     try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
-            "select teacher_id, name, tel, created_date, email, degree, school, major, wage"
-                + " from app_teacher"
-                + " where teacher_id=" + no)) {
+            "select m.member_id, m.name, m.tel, m.created_date, m.email, t.degree, t.school, t.major, t.wage"
+                + " from app_teacher t"
+                + " inner join app_member m on t.member_id = m.member_id"
+                + " where t.member_id=" + no)) {
 
       if (rs.next()) {
         Teacher s = new Teacher();
-        s.setNo(rs.getInt("teacher_id"));
+        s.setNo(rs.getInt("member_id"));
         s.setName(rs.getString("name"));
         s.setTel(rs.getString("tel"));
         s.setCreatedDate(rs.getDate("created_date"));
@@ -100,24 +100,23 @@ public class TeacherDaoImpl implements TeacherDao {
   }
 
   @Override
-  public void update(Teacher t) {
+  public int update(Teacher t) {
     try (Statement stmt = con.createStatement()) {
 
       String sql = String.format(
           "update app_teacher set "
-              + " name='%s', tel='%s', email='%s', degree=%d,"
-              + " school='%s', major='%s', wage=%d "
-              + " where teacher_id=%d",
-              t.getName(),
-              t.getTel(),
-              t.getEmail(),
+              + " degree=%d,"
+              + " school='%s',"
+              + " major='%s',"
+              + " wage=%d "
+              + " where member_id=%d",
               t.getDegree(),
               t.getSchool(),
               t.getMajor(),
               t.getWage(),
               t.getNo());
 
-      stmt.executeUpdate(sql);
+      return stmt.executeUpdate(sql);
 
     } catch (Exception e) {
       throw new DaoException(e);
@@ -125,16 +124,51 @@ public class TeacherDaoImpl implements TeacherDao {
   }
 
   @Override
-  public boolean delete(Teacher t) {
+  public int delete(int no) {
+
     try (Statement stmt = con.createStatement()) {
 
-      String sql = String.format("delete from app_teacher where teacher_id=%d", t.getNo());
-
-      return stmt.executeUpdate(sql) == 1;
+      String sql = String.format("delete from app_teacher where member_id=%d", no);
+      return stmt.executeUpdate(sql);
 
     } catch (Exception e) {
       throw new DaoException(e);
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+    TeacherDaoImpl dao = new TeacherDaoImpl(con);
+
+    //    Teacher s = new Teacher();
+    //    s.setNo(39);
+    //    s.setDegree(3);
+    //    s.setSchool("세종 대학교");
+    //    s.setMajor("소프트웨어 공학과");
+    //    s.setWage(25000);
+    //    dao.insert(s);
+    //    System.out.println(s);
+
+
+    //    List<Teacher> list = dao.findAll();
+    //    for (Teacher s :list) {
+    //      System.out.println(s);
+    //    }
+
+
+    //    Teacher s = dao.findByNo(39);
+    //    System.out.println(s);
+
+
+    //    Teacher s = new Teacher();
+    //    s.setNo(39);
+    //    s.setDegree(2);
+    //    s.setSchool("국민 대학교");
+    //    s.setMajor("컴퓨터 공학과");
+    //    s.setWage(22500);
+    //    System.out.println(dao.update(s));
+
+    //    System.out.println(dao.delete(30));
   }
 }
 

@@ -25,11 +25,13 @@ public class MemberDaoImpl implements MemberDao {
 
       String sql = String.format(
           "insert into app_Member("
-              + "name,"
+              + "  member_id,"
+              + " name,"
               + " email,"
               + " pwd,"
               + " tel)"
-              + " values('%s', '%s', sha2('%s', 256), '%s')",
+              + " values('%s', '%s', '%s', sha2('%s', 256), '%s')",
+              s.getNo(),
               s.getName(),
               s.getEmail(),
               s.getPassword(),
@@ -139,10 +141,10 @@ public class MemberDaoImpl implements MemberDao {
     MemberDaoImpl dao = new MemberDaoImpl(con);
 
     Member m = new Member();
-    m.setName("test2");
-    m.setEmail("numbertwo@test.com");
+    m.setName("test5");
+    m.setEmail("numberfive@test.com");
     m.setPassword("1");
-    m.setTel("54321");
+    m.setTel("55555");
     dao.insert(m);
     System.out.println(m);
 

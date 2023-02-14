@@ -22,17 +22,18 @@ public class StudentDaoImpl implements StudentDao {
   @Override
   public void insert(Student s) {
     try (Statement stmt = con.createStatement()) {
+
       String sql = String.format(
           "insert into app_student("
-              + " member_id,"
-              + " pst_no,"
-              + " bas_addr,"
-              + " det_addr,"
-              + " work,"
-              + " gender,"
-              + " level)"
+              + "  member_id,"
+              + "  pst_no,"
+              + "  bas_addr,"
+              + "  det_addr,"
+              + "  work,"
+              + "  gender,"
+              + "  level)"
               + " values('%s','%s','%s','%s',%b,'%s',%d)",
-              s.getNo(),
+              s.getNo(), // app_member 테이블에 입력한 후 자동 생성된 PK 값
               s.getPostNo(),
               s.getBasicAddress(),
               s.getDetailAddress(),
@@ -90,6 +91,7 @@ public class StudentDaoImpl implements StudentDao {
                 + " m.member_id,"
                 + " m.name,"
                 + " m.tel,"
+                + " m.email,"
                 + " m.created_date,"
                 + " s.pst_no,"
                 + " s.bas_addr,"
@@ -98,7 +100,7 @@ public class StudentDaoImpl implements StudentDao {
                 + " s.gender,"
                 + " s.level"
                 + " from app_student s"
-                + "     inner join app_member m on s.meber_id = m.member_id"
+                + "     inner join app_member m on s.member_id = m.member_id"
                 + " where"
                 + "     s.member_id=" + no)) {
 
@@ -106,8 +108,8 @@ public class StudentDaoImpl implements StudentDao {
         Student s = new Student();
         s.setNo(rs.getInt("member_id"));
         s.setName(rs.getString("name"));
-        s.setEmail(rs.getString("email"));
         s.setTel(rs.getString("tel"));
+        s.setEmail(rs.getString("email"));
         s.setCreatedDate(rs.getDate("created_date"));
         s.setPostNo(rs.getString("pst_no"));
         s.setBasicAddress(rs.getString("bas_addr"));
@@ -216,16 +218,40 @@ public class StudentDaoImpl implements StudentDao {
     Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
     StudentDaoImpl dao = new StudentDaoImpl(con);
 
-    Student s = new Student();
-    s.setNo(1);
-    s.setPostNo("13245");
-    s.setBasicAddress("강남구");
-    s.setDetailAddress("서초대로");
-    s.setWorking(false);
-    s.setGender('M');
-    s.setLevel((byte) 2);
+    //    Student s = new Student();
+    //    s.setNo(30);
+    //    s.setPostNo("54321");
+    //    s.setBasicAddress("강남구2");
+    //    s.setDetailAddress("서초대로2");
+    //    s.setWorking(true);
+    //    s.setGender('W');
+    //    s.setLevel((byte) 0);
+    //    dao.insert(s);
+    //    System.out.println(s);
 
-    dao.insert(s);
+
+    //    List<Student> list = dao.findAll();
+    //    for (Student s :list) {
+    //      System.out.println(s);
+    //    }
+
+
+    //    Student s = dao.findByNo(38);
+    //    System.out.println(s);
+
+
+    //    Student s = new Student();
+    //    s.setNo(38);
+    //    s.setPostNo("14235");
+    //    s.setBasicAddress("강남구10");
+    //    s.setDetailAddress("서초대로10");
+    //    s.setWorking(false);
+    //    s.setGender('W');
+    //    s.setLevel((byte) 2);
+    //    System.out.println(dao.update(s));
+
+
+    System.out.println(dao.delete(5));
   }
 }
 

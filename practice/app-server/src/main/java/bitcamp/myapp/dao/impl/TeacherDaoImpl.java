@@ -83,7 +83,7 @@ public class TeacherDaoImpl implements TeacherDao {
         s.setNo(rs.getInt("teacher_id"));
         s.setName(rs.getString("name"));
         s.setTel(rs.getString("tel"));
-        s.setCreatedDate(rs.getString("created_date"));
+        s.setCreatedDate(rs.getDate("created_date"));
         s.setEmail(rs.getString("email"));
         s.setDegree(rs.getInt("degree"));
         s.setSchool(rs.getString("school"));

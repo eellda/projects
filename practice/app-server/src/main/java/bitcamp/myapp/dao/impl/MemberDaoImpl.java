@@ -1,6 +1,7 @@
 package bitcamp.myapp.dao.impl;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -51,14 +52,9 @@ public class MemberDaoImpl implements MemberDao {
   public List<Member> findAll() {
     try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
-            "select"
-                + " member_id,"
-                + " name,"
-                + " email,"
-                + " created_date,"
-                + " from app_Member"
-                + " order by"
-                + " member_id desc")) {
+            "select member_id, name, email, created_date"
+                + " from app_member"
+                + " order by member_id desc")) {
 
       ArrayList<Member> list = new ArrayList<>();
       while (rs.next()) {
@@ -81,15 +77,9 @@ public class MemberDaoImpl implements MemberDao {
   public Member findByNo(int no) {
     try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
-            "select"
-                + " member_id,"
-                + " name,"
-                + " email,"
-                + " tel,"
-                + " created_date,"
-                + " from app_Member"
-                + " where"
-                + " Member_id=" + no)) {
+            "select member_id, name, email, tel, created_date"
+                + " from app_member"
+                + " where member_id=" + no)) {
 
       if (rs.next()) {
         Member s = new Member();
@@ -114,12 +104,8 @@ public class MemberDaoImpl implements MemberDao {
 
       String sql = String.format(
           "update app_member set "
-              + " name='%s',"
-              + " email='%s',"
-              + " pwd=sha2('%s', 256),"
-              + " tel='%s',"
-              + " where"
-              + " member_id=%d",
+              + " name='%s', email='%s', pwd=sha2('%s',256), tel='%s'"
+              + " where member_id=%d",
               s.getName(),
               s.getEmail(),
               s.getPassword(),
@@ -146,6 +132,41 @@ public class MemberDaoImpl implements MemberDao {
     } catch (Exception e) {
       throw new DaoException(e);
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+    MemberDaoImpl dao = new MemberDaoImpl(con);
+
+    Member m = new Member();
+    m.setName("test2");
+    m.setEmail("numbertwo@test.com");
+    m.setPassword("1");
+    m.setTel("54321");
+    dao.insert(m);
+    System.out.println(m);
+
+
+    //    List<Member> list = dao.findAll();
+    //    for (Member m :list) {
+    //      System.out.println(m);
+    //    }
+
+
+    //    Member m = dao.findByNo(28);
+    //    System.out.println(m);
+
+
+    //    Member m = new Member();
+    //    m.setNo(28);
+    //    m.setName("test11");
+    //    m.setEmail("numbereleven@test.com");
+    //    m.setPassword("1");
+    //    m.setTel("1111");
+    //    System.out.println(dao.update(m));
+
+
+    //    System.out.println(dao.delete(29));
   }
 }
 

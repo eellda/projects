@@ -55,6 +55,7 @@ public class StudentHandler {
   private void printMembers(StreamTool streamTool) throws Exception {
     List<Student> members = this.studentDao.findAll();
     streamTool.println("번호\t이름\t전화\t재직\t전공");
+
     for (Student m : members) {
       streamTool.printf("%d\t%s\t%s\t%s\t%s\n",
           m.getNo(), m.getName(), m.getTel(),
@@ -66,7 +67,6 @@ public class StudentHandler {
 
   private void printMember(StreamTool streamTool) throws Exception {
     int memberNo = streamTool.promptInt("회원번호? ");
-
     Student m = this.studentDao.findByNo(memberNo);
 
     if (m == null) {
@@ -105,7 +105,6 @@ public class StudentHandler {
       return;
     }
 
-    // 변경할 데이터를 저장할 인스턴스 준비
     Student m = new Student();
     m.setNo(old.getNo());
     m.setCreatedDate(old.getCreatedDate());
@@ -125,8 +124,8 @@ public class StudentHandler {
         getLevelText(old.getLevel()))));
 
     String str = streamTool.promptString("정말 변경하시겠습니까?(y/N) ");
-    if (str.equalsIgnoreCase("Y")) {
 
+    if (str.equalsIgnoreCase("Y")) {
       con.setAutoCommit(false);
 
       try {
@@ -184,10 +183,9 @@ public class StudentHandler {
 
   private void searchMember(StreamTool streamTool) throws Exception {
     String keyword = streamTool.promptString("검색어? ");
-
     List<Student> members = this.studentDao.findByKeyword(keyword);
-
     streamTool.println("번호\t이름\t전화\t재직\t전공");
+
     for (Student m : members) {
       streamTool.printf("%d\t%s\t%s\t%s\t%s\n",
           m.getNo(), m.getName(), m.getTel(),
@@ -198,7 +196,6 @@ public class StudentHandler {
   }
 
   public void service(StreamTool streamTool) throws Exception {
-
     menu(streamTool);
 
     while (true) {

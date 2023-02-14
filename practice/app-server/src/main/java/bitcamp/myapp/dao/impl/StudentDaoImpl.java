@@ -1,6 +1,7 @@
 package bitcamp.myapp.dao.impl;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -20,9 +21,7 @@ public class StudentDaoImpl implements StudentDao {
 
   @Override
   public void insert(Student s) {
-
     try (Statement stmt = con.createStatement()) {
-
       String sql = String.format(
           "insert into app_student("
               + " member_id,"
@@ -63,8 +62,8 @@ public class StudentDaoImpl implements StudentDao {
                 + "     inner join app_member m on s.member_id = m.member_id"              
                 + " order by"
                 + "     member_id desc")) {
-
       ArrayList<Student> list = new ArrayList<>();
+
       while (rs.next()) {
         Student s = new Student();
         s.setNo(rs.getInt("member_id"));
@@ -211,6 +210,22 @@ public class StudentDaoImpl implements StudentDao {
     } catch (Exception e) {
       throw new DaoException(e);
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+    StudentDaoImpl dao = new StudentDaoImpl(con);
+
+    Student s = new Student();
+    s.setNo(1);
+    s.setPostNo("13245");
+    s.setBasicAddress("강남구");
+    s.setDetailAddress("서초대로");
+    s.setWorking(false);
+    s.setGender('M');
+    s.setLevel((byte) 2);
+
+    dao.insert(s);
   }
 }
 

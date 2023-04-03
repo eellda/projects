@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionPool {
+
   String jdbcUrl;
   String username;
   String password;
@@ -20,7 +21,7 @@ public class ConnectionPool {
 
   public Connection getConnection() throws Exception {
     if (conList.size() == 0) {
-      System.out.println("Connection 객체 생성!");
+      System.out.println("Connection 생성!");
       return DriverManager.getConnection(jdbcUrl, username, password);
     }
     return conList.remove(0);
@@ -29,4 +30,9 @@ public class ConnectionPool {
   public void returnConnection(Connection con) {
     conList.add(con);
   }
+
 }
+
+
+
+

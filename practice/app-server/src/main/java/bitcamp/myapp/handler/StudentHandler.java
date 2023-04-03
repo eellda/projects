@@ -10,54 +10,59 @@ import bitcamp.util.StreamTool;
 
 public class StudentHandler {
 
-  private StudentDao studentDao;
-  private MemberDao memberDao;
   private ConnectionFactory conFactory;
+  private MemberDao memberDao;
+  private StudentDao studentDao;
   private String title;
 
   public StudentHandler(String title, ConnectionFactory conFactory, MemberDao memberDao, StudentDao studentDao) {
     this.title = title;
-    this.studentDao = studentDao;
-    this.memberDao = memberDao;
     this.conFactory = conFactory;
+    this.memberDao = memberDao;
+    this.studentDao = studentDao;
   }
 
   private void inputMember(StreamTool streamTool) throws Exception {
-    Student m = new Student();
-    m.setName(streamTool.promptString("이름? "));
-    m.setEmail(streamTool.promptString("이메일? "));
-    m.setPassword(streamTool.promptString("암호? "));
-    m.setTel(streamTool.promptString("전화? "));
-    m.setPostNo(streamTool.promptString("우편번호? "));
-    m.setBasicAddress(streamTool.promptString("주소1? "));
-    m.setDetailAddress(streamTool.promptString("주소2? "));
-    m.setWorking(streamTool.promptInt("0. 미취업\n1. 재직중\n재직자? ") == 1);
-    m.setGender(streamTool.promptInt("0. 남자\n1. 여자\n성별? ") == 0 ? 'M' : 'W');
-    m.setLevel((byte) streamTool.promptInt("0. 비전공자\n1. 준전공자\n2. 전공자\n전공? "));
+    Student s = new Student();
+    s.setName(streamTool.promptString("이름? "));
+    s.setEmail(streamTool.promptString("이메일? "));
+    s.setPassword(streamTool.promptString("암호? "));
+    s.setTel(streamTool.promptString("전화? "));
+    s.setPostNo(streamTool.promptString("우편번호? "));
+    s.setBasicAddress(streamTool.promptString("주소1? "));
+    s.setDetailAddress(streamTool.promptString("주소2? "));
+    s.setWorking(streamTool.promptInt("0. 미취업\n1. 재직중\n재직자? ") == 1);
+    s.setGender(streamTool.promptInt("0. 남자\n1. 여자\n성별? ") == 0 ? 'M' : 'W');
+    s.setLevel((byte) streamTool.promptInt("0. 비전공자\n1. 준전공자\n2. 전공자\n전공? "));
 
+    // 현재 스레드가 갖고 있는 Connection 객체를 리턴 받는다.
     Connection con = conFactory.getConnection();
     con.setAutoCommit(false);
-
     try {
-      this.memberDao.insert(m);
-      this.studentDao.insert(m);
+      memberDao.insert(s);
+      studentDao.insert(s);
+
+      Thread t = Thread.currentThread();
+      System.out.printf("%s 스레드를 30초간 중지합니다!", t.getName());
+      Thread.sleep(30000);
+
       con.commit();
       streamTool.println("입력했습니다!").send();
 
     } catch (Exception e) {
       con.rollback();
-      streamTool.println("입력 실패 했습니다!").send();
+      streamTool.println("입력 실패입니다!").send();
       e.printStackTrace();
 
     } finally {
       con.setAutoCommit(true);
     }
+
   }
 
   private void printMembers(StreamTool streamTool) throws Exception {
     List<Student> members = this.studentDao.findAll();
     streamTool.println("번호\t이름\t전화\t재직\t전공");
-
     for (Student m : members) {
       streamTool.printf("%d\t%s\t%s\t%s\t%s\n",
           m.getNo(), m.getName(), m.getTel(),
@@ -69,6 +74,7 @@ public class StudentHandler {
 
   private void printMember(StreamTool streamTool) throws Exception {
     int memberNo = streamTool.promptInt("회원번호? ");
+
     Student m = this.studentDao.findByNo(memberNo);
 
     if (m == null) {
@@ -90,6 +96,8 @@ public class StudentHandler {
 
   }
 
+  // 인스턴스 멤버(필드나 메서드)를 사용하지 않기 때문에
+  // 그냥 스태틱 메서드로 두어라!
   private static String getLevelText(int level) {
     switch (level) {
       case 0: return "비전공자";
@@ -100,6 +108,7 @@ public class StudentHandler {
 
   private void modifyMember(StreamTool streamTool) throws Exception {
     int memberNo = streamTool.promptInt("회원번호? ");
+
     Student old = this.studentDao.findByNo(memberNo);
 
     if (old == null) {
@@ -107,10 +116,13 @@ public class StudentHandler {
       return;
     }
 
+    // 변경할 데이터를 저장할 인스턴스 준비
     Student m = new Student();
     m.setNo(old.getNo());
     m.setCreatedDate(old.getCreatedDate());
     m.setName(streamTool.promptString(String.format("이름(%s)? ", old.getName())));
+    m.setEmail(streamTool.promptString(String.format("이메일(%s)? ", old.getEmail())));
+    m.setPassword(streamTool.promptString("암호? "));
     m.setTel(streamTool.promptString(String.format("전화(%s)? ", old.getTel())));
     m.setPostNo(streamTool.promptString(String.format("우편번호(%s)? ", old.getPostNo())));
     m.setBasicAddress(streamTool.promptString(String.format("기본주소(%s)? ", old.getBasicAddress())));
@@ -126,27 +138,24 @@ public class StudentHandler {
         getLevelText(old.getLevel()))));
 
     String str = streamTool.promptString("정말 변경하시겠습니까?(y/N) ");
-
     if (str.equalsIgnoreCase("Y")) {
-
+      // 현재 스레드가 갖고 있는 Connection 객체를 리턴 받는다.
       Connection con = conFactory.getConnection();
       con.setAutoCommit(false);
-
       try {
-        this.memberDao.update(m);
-        this.studentDao.update(m);
+        memberDao.update(m);
+        studentDao.update(m);
         con.commit();
         streamTool.println("변경했습니다.");
 
       } catch (Exception e) {
         con.rollback();
-        streamTool.println("변경 실패 했습니다.");
+        streamTool.println("변경 실패했습니다!");
         e.printStackTrace();
 
       } finally {
         con.setAutoCommit(true);
       }
-
     } else {
       streamTool.println("변경 취소했습니다.");
     }
@@ -155,6 +164,7 @@ public class StudentHandler {
 
   private void deleteMember(StreamTool streamTool) throws Exception {
     int memberNo = streamTool.promptInt("회원번호? ");
+
     Student m = this.studentDao.findByNo(memberNo);
 
     if (m == null) {
@@ -168,9 +178,9 @@ public class StudentHandler {
       return;
     }
 
+    // 현재 스레드가 갖고 있는 Connection 객체를 리턴 받는다.
     Connection con = conFactory.getConnection();
     con.setAutoCommit(false);
-
     try {
       studentDao.delete(memberNo);
       memberDao.delete(memberNo);
@@ -179,7 +189,7 @@ public class StudentHandler {
 
     } catch (Exception e) {
       con.rollback();
-      streamTool.println("삭제 실패 했습니다.").send();
+      streamTool.println("삭제 실패했습니다.").send();
 
     } finally {
       con.setAutoCommit(true);
@@ -188,10 +198,11 @@ public class StudentHandler {
 
   private void searchMember(StreamTool streamTool) throws Exception {
     String keyword = streamTool.promptString("검색어? ");
-    List<Student> members = this.studentDao.findByKeyword(keyword);
-    streamTool.println("번호\t이름\t전화\t재직\t전공");
 
-    for (Student m : members) {
+    List<Student> students = this.studentDao.findByKeyword(keyword);
+
+    streamTool.println("번호\t이름\t전화\t재직\t전공");
+    for (Student m : students) {
       streamTool.printf("%d\t%s\t%s\t%s\t%s\n",
           m.getNo(), m.getName(), m.getTel(),
           m.isWorking() ? "예" : "아니오",
@@ -201,6 +212,7 @@ public class StudentHandler {
   }
 
   public void service(StreamTool streamTool) throws Exception {
+
     menu(streamTool);
 
     while (true) {

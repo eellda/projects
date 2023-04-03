@@ -2,12 +2,8 @@ package bitcamp.myapp;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import bitcamp.myapp.dao.impl.BoardDaoImpl;
 import bitcamp.myapp.dao.impl.MemberDaoImpl;
 import bitcamp.myapp.dao.impl.StudentDaoImpl;
@@ -22,7 +18,8 @@ import bitcamp.util.StreamTool;
 
 public class ServerApp {
 
-  ConnectionPool connectionPool = new ConnectionPool("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+  ConnectionPool connectionPool = new ConnectionPool(
+      "jdbc:mariadb://localhost:3306/studydb", "study", "1111");
   ConnectionFactory conFactory = new ConnectionFactory(connectionPool);
 
   StudentHandler studentHandler;
@@ -41,22 +38,23 @@ public class ServerApp {
 
   public ServerApp() throws Exception{
 
-    InputStream mybatisConfigInputStream = Resources.getResourceAsStream("bitcamp/myapp/config/mybatis-config.xml");
-    SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-    SqlSessionFactory sqlSessionFactory = builder.build(mybatisConfigInputStream);
+    //    InputStream mybatisConfigInputStream = Resources.getResourceAsStream(
+    //        "bitcamp/myapp/mapper/BoardMapper.xml");
+    //    SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+    //    SqlSessionFactory sqlSessionFactory = builder.build(mybatisConfigInputStream);
 
-    BoardDaoImpl boardDao = new BoardDaoImpl(sqlSessionFactory);
+
+    BoardDaoImpl boardDao = new BoardDaoImpl(conFactory);
     MemberDaoImpl memberDao = new MemberDaoImpl(conFactory);
     StudentDaoImpl studentDao = new StudentDaoImpl(conFactory);
     TeacherDaoImpl teacherDao = new TeacherDaoImpl(conFactory);
 
-    this.studentHandler = new StudentHandler("학생",conFactory, memberDao, studentDao);
-    this.teacherHandler = new TeacherHandler("강사", teacherDao);
+    this.studentHandler = new StudentHandler("학생", conFactory, memberDao, studentDao);
+    this.teacherHandler = new TeacherHandler("강사", conFactory, memberDao, teacherDao);
     this.boardHandler = new BoardHandler("게시판", boardDao);
   }
 
   void execute(int port) {
-
     try (ServerSocket serverSocket = new ServerSocket(port)) {
       System.out.println("서버 실행 중...");
 
@@ -64,8 +62,6 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         new Thread(() -> service(socket)).start();
       }
-
-
 
     } catch (Exception e) {
       System.out.println("서버 소켓 오류!");
@@ -145,23 +141,29 @@ public class ServerApp {
   }
 
   public void service(Socket clientSocket) {
+    // 스레드가 실행할 코드를 둔다.
     try (Socket socket = clientSocket;
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
         DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
+      // 입출력 보조 도구 준비
       StreamTool streamTool = new StreamTool(in, out);
 
-      String clientIp = socket.getInetAddress().getHostName();
-      System.out.printf("접속: %s\n", clientIp);
+      String clientIP = socket.getInetAddress().getHostAddress();
+      System.out.printf("접속: %s\n", clientIP);
 
       hello(streamTool);
       processRequest(streamTool);
-      System.out.printf("끊기: %s\n", clientIp);
+
+      System.out.printf("끊기: %s\n", clientIP);
+
     } catch (Exception e) {
       System.out.println("클라이언트 요청 처리 오류!");
       e.printStackTrace();
+
     } finally {
-      conFactory.closeConnectino();
+      // 현재 스레드가 갖고 있는 커넥션 객체를 ConnectionPool에 반납시킨다.
+      conFactory.closeConnection();
     }
   }
 }

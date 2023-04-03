@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="BoardDao">
+
+<resultMap type="board" id="boardMap">
+  <id column="board_id" property="no" />
+  <result column="title" property="title"/>
+  <result column="name" property="name"/>
+  <result column="content" property="content"/>
+  <result column="view_cnt" property="viewCount"/>
+  <result column="created_date" property="createdDate"/>
+</resultMap>
+
+<insert id="insert" parameterType="board"
+useGeneratedKeys="true" keyColumn="board_id" keyProperty="no">
+  insert into ost_board(title, content)
+  values(#{title}, #{content})
+</insert>
+ 
+ <select id="findAll" resultMap="boardMap" parameterType="string">
+  select
+    b.board_id,
+    b.title,
+    b.created_date,
+    b.view_cnt
+  from
+    ost_board b
+  <if test="keyword != '' and keyword != null">
+  where
+    b.title like(concat('%',#{keyword},'%'))
+    or b.content like(concat('%',#{keyword},'%'))
+  </if>
+  order by
+    b.board_id desc
+ </select>
+ 
+ <select id="findByNo" parameterMap="boardMap" parameterType="int">
+  select
+    b.board_id,
+    b.title,
+    b.content,
+    b.created_date,
+    b.view_cnt
+  from
+    ost_board b
+  where
+    b.board_id=#{no}
+ </select>
+ 
+ <update id="increaseViewCount" parameterType="int">
+  update ost_board set
+    view_cnt = view_cnt +1
+  where board_id=#{no}
+ </update>
+ 
+ <update id="update" parameterType="board">
+  update ost_board set
+    title=#{title},
+    content=#{content}
+  where board_id=#{no}
+ </update>
+ 
+ <delete id="delete" parameterType="int">
+  delete from ost_board
+  where
+    board_id=#{no}
+ </delete>
+ 
+</mapper>

@@ -3,7 +3,6 @@ package bitcamp.myapp.vo;
 public class Teacher extends Member implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
 
-  private String email;
   private int degree;
   private String school;
   private String major;
@@ -12,18 +11,10 @@ public class Teacher extends Member implements java.io.Serializable {
 
   @Override
   public String toString() {
-    return "Teacher [email=" + email + ", degree=" + degree + ", school=" + school + ", major="
-        + major + ", wage=" + wage + ", getNo()=" + getNo() + ", getName()=" + getName()
-        + ", getTel()=" + getTel() + ", getCreatedDate()=" + getCreatedDate() + "]";
-  }
-
-  @Override
-  public String getEmail() {
-    return email;
-  }
-  @Override
-  public void setEmail(String email) {
-    this.email = email;
+    return "Teacher [degree=" + degree + ", school=" + school + ", major=" + major + ", wage="
+        + wage + ", getNo()=" + getNo() + ", getName()=" + getName() + ", getEmail()=" + getEmail()
+        + ", getPassword()=" + getPassword() + ", getTel()=" + getTel() + ", getCreatedDate()="
+        + getCreatedDate() + "]";
   }
   public int getDegree() {
     return degree;

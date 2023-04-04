@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Board from "./pages/Board";
-import Login from "./pages/Login";
+// import Insert from "./pages/Insert";
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 
@@ -10,7 +10,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/board" element={<Board />} />
-      <Route path="/login" element={<Login />} />
+      {/* <Route path="/insert" element={<Insert />} /> */}
     </Routes>
   );
 };

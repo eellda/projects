@@ -2,13 +2,13 @@ table {
   width: 100%;
 }
 
-.board-cate {
+.boardCate {
   display: flex;
   justify-content: space-between;
   height: 60px;
 }
 
-.board-list {
+.boardList {
   display: flex;
   list-style: none;
   text-align: center;
@@ -17,14 +17,14 @@ table {
   padding-left: 50px;
 }
 
-.board-list li {
+.boardListLi {
   cursor: pointer;
   font-size: 16px;
   font-weight: normal;
   padding-right: 25px;
 }
 
-.board-head {
+.boardHead {
   color: #b5b5c3;
   background-color: #f3f6f9;
 }

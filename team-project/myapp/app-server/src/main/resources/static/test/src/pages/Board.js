@@ -30,14 +30,23 @@ const Board = () => {
           </div>
           <div className={index.headerTail}>
             <ul className={index.headerTailUl}>
-              <li className={index.signup} id="signup">
-                {/* <Link to="/about">Create</Link> */}
+              <li
+                className={`${index.signup} ${index.signupI} ${index.headerTailUlLi}`}
+                id="signup"
+              >
+                <Link to="/insert">Create</Link>
               </li>
-              <li className={index.login} id="login">
+              <li
+                className={`${index.login} ${index.loginI} ${index.headerTailUlLi}`}
+                id="login"
+              >
                 {/* 로그인 */}
                 <Link to="/about">Connect</Link>
               </li>
-              <li className={index.logout} id="logout">
+              <li
+                className={`${index.logout} ${index.logoutI} ${index.headerTailUlLi}`}
+                id="logout"
+              >
                 <a href="app/auth/logout" onclick="logout(); return false;">
                   로그아웃(<span id="nickname"></span>)
                 </a>
@@ -49,8 +58,8 @@ const Board = () => {
         <div className={index.body}>
           <div className={index.cate}>
             <ul className={index.list}>
-              <li>HOT 플레이스</li>
-              <li className="board">커뮤니티</li>
+              <li className={index.listLi}>HOT 플레이스</li>
+              <li className={index.listLi}>커뮤니티</li>
             </ul>
           </div>
           <div className={board.boardCate}>

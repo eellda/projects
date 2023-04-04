@@ -1,3 +1,8 @@
+.main {
+  display: flex;
+  justify-content: center;
+}
+
 .container {
   display: grid;
   grid-template-rows: 10% 75% 15%;
@@ -61,6 +66,12 @@
   display: flex;
 }
 
+.headerTailUlLi {
+  margin-right: 8px;
+  list-style: none;
+  margin-top: 15px;
+}
+
 .login {
   display: none;
   justify-content: center;
@@ -77,6 +88,46 @@
   /* display: none; */
   justify-content: center;
   text-align: center;
+}
+
+.signupI {
+  cursor: pointer;
+  border: 1px solid;
+  text-align: center;
+  height: 33px;
+  width: 80px;
+  border-radius: 10px;
+  background: linear-gradient(
+    101.12deg,
+    #eb1484 27.35%,
+    #c91cc3 99.99%,
+    #c81cc5 100%,
+    #c81cc5 100%
+  );
+  color: white;
+  padding-top: 3px;
+}
+
+.loginI {
+  cursor: pointer;
+  border: 1px solid;
+  text-align: center;
+  height: 33px;
+  width: 100px;
+  border-radius: 10px;
+  color: #da18a3;
+  padding-top: 3px;
+}
+
+.logoutI {
+  cursor: pointer;
+  border: 1px solid;
+  text-align: center;
+  height: 33px;
+  width: 100px;
+  border-radius: 10px;
+  color: #da18a3;
+  padding-top: 3px;
 }
 
 /* body */
@@ -103,6 +154,13 @@
   align-items: center;
   padding-top: 20px;
   padding-left: 50px;
+}
+
+.listLi {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 25px;
 }
 
 .listBestLi {
@@ -251,74 +309,16 @@
 
 /* not yet use */
 
-.main {
-  display: flex;
-  justify-content: center;
-}
-
 .search-btn {
   width: 20px;
   height: 20px;
 }
 
-.header-tail ul li {
-  margin-right: 8px;
-  list-style: none;
-  margin-top: 15px;
-}
-
-#signup {
-  cursor: pointer;
-  border: 1px solid;
-  text-align: center;
-  height: 33px;
-  width: 80px;
-  border-radius: 10px;
-  background: linear-gradient(
-    101.12deg,
-    #eb1484 27.35%,
-    #c91cc3 99.99%,
-    #c81cc5 100%,
-    #c81cc5 100%
-  );
-  color: white;
-  padding-top: 3px;
-}
-
-#login {
-  cursor: pointer;
-  border: 1px solid;
-  text-align: center;
-  height: 33px;
-  width: 100px;
-  border-radius: 10px;
-  color: #da18a3;
-  padding-top: 3px;
-}
-
-#logout {
-  cursor: pointer;
-  border: 1px solid;
-  text-align: center;
-  height: 33px;
-  width: 100px;
-  border-radius: 10px;
-  color: #da18a3;
-  padding-top: 3px;
-}
-
-.list li {
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  padding-left: 25px;
-}
-
-.body .mbox {
+/* .body .mbox {
   justify-content: center;
   display: grid;
   grid-template-columns: 300px 300px 300px 300px;
-}
+} */
 
 .mbox img {
   width: 250px;

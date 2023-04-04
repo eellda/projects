@@ -1,13 +1,19 @@
 import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+
+import index from "./index.module.css";
+import insert from "./insert.module.css";
 import logo from "../img/logo.png";
 import Instagram from "../img/Instagram.png";
 import twitter from "../img/twitter.png";
 import telegram from "../img/telegram.png";
 import Discord from "../img/Discord.png";
-import index from "./index.module.css";
-import insert from "./insert.module.css";
 
-const Login = () => {
+const Form1 = () => {
   return (
     <div className={index.main}>
       <div className={index.container}>
@@ -55,22 +61,52 @@ const Login = () => {
         </div>
 
         <div className={insert.body}>
-          <div className={insert.wrapper}>
-            <div className={insert.formBox}>
-              <h2 className={insert.formBoxH2}>글쓰깅~</h2>
-              <div className={insert.inputForm}>
-                <Link to="#">
-                  <div className={insert.inputBox}>
-                    <span className={insert.inputBoxIcon}></span>
-                  </div>
-                </Link>
-                <Link to="/form">
-                  <div className={insert.inputBox2}>
-                    <span className={insert.inputBoxIcon}></span>
-                  </div>
-                </Link>
-              </div>
-            </div>
+          <div className={insert.wrapperForm}>
+            <p className={insert.formTitle}>커뮤니티 게시글</p>
+            <Form className={insert.formB}>
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="formGridState">
+                  <Form.Label>카테고리</Form.Label>
+                  <Form.Select style={{ width: "300px" }} defaultValue="자유">
+                    <option>자유</option>
+                    <option>Q&A</option>
+                    <option>맛집&이색 카페</option>
+                    <option>여행 정보</option>
+                    <option>여행 동행</option>
+                  </Form.Select>
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="formGridCity">
+                  <Form.Label>제목</Form.Label>
+                  <Form.Control style={{ width: "700px" }} />
+                </Form.Group>
+
+                <Form.Group controlId="formFileMultiple" className="mb-3">
+                  <Form.Label>파일 업로드</Form.Label>
+                  <Form.Control type="file" multiple />
+                </Form.Group>
+
+                {/* <FloatingLabel>
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Leave a comment here"
+                    style={{ height: "350px" }}
+                  />
+                </FloatingLabel> */}
+
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlTextarea1"
+                >
+                  <Form.Label>내용</Form.Label>
+                  <Form.Control as="textarea" style={{ height: "280px" }} />
+                </Form.Group>
+              </Row>
+
+              <Button variant="danger" type="submit" style={{ width: "100px" }}>
+                작성
+              </Button>
+            </Form>
           </div>
         </div>
 
@@ -126,4 +162,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Form1;

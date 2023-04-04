@@ -338,11 +338,11 @@
   border-radius: 15px;
 }
 
-.footer-main ul {
+.footerMainUl {
   margin-right: 100px;
 }
 
-.footer-main ul li {
+.footerMainUlLi {
   margin-top: 5px;
   list-style: none;
 }

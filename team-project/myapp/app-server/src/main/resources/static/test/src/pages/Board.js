@@ -179,25 +179,37 @@ const Board = () => {
         <div className={index.footer}>
           <div className={index.footerMain}>
             <div>
-              <ul className={index.mainF}>
-                <li className={index.ff}>
+              <ul className={`${index.mainF} ${index.footerMainUl}`}>
+                <li className={`${index.ff} ${index.footerMainUlLi}`}>
                   <img src={logo} className={index.logo} alt="logo"></img>
                   <span>여긴 좋아</span>
                 </li>
-                <li className={index.fs}>Get the lates Updates</li>
+                <li className={`${index.fs} ${index.footerMainUlLi}`}>
+                  Get the lates Updates
+                </li>
               </ul>
             </div>
             <div>
-              <ul className={index.mainS}>
-                <li className={index.sf}>가나다라</li>
-                <li className={index.ss}>가나다</li>
+              <ul className={`${index.mainS} ${index.footerMainUl}`}>
+                <li className={`${index.sf} ${index.footerMainUlLi}`}>
+                  가나다라
+                </li>
+                <li className={`${index.ss} ${index.footerMainUlLi}`}>
+                  가나다
+                </li>
               </ul>
             </div>
             <div>
-              <ul className={index.mainT}>
-                <li className={index.tf}>Support</li>
-                <li className={index.ts}>Help center</li>
-                <li className={index.tt}>Terms of service</li>
+              <ul className={`${index.mainT} ${index.footerMainUl}`}>
+                <li className={`${index.tf} ${index.footerMainUlLi}`}>
+                  Support
+                </li>
+                <li className={`${index.ts} ${index.footerMainUlLi}`}>
+                  Help center
+                </li>
+                <li className={`${index.tt} ${index.footerMainUlLi}`}>
+                  Terms of service
+                </li>
               </ul>
             </div>
           </div>

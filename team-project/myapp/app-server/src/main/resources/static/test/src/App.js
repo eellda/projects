@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Board from "./pages/Board";
 import Insert from "./pages/Insert";
+import Form from "./pages/Form";
+import "bootstrap/dist/css/bootstrap.css";
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 
@@ -11,6 +13,7 @@ const App = () => {
       <Route path="/" element={<Home />} />
       <Route path="/board" element={<Board />} />
       <Route path="/insert" element={<Insert />} />
+      <Route path="/form" element={<Form />} />
     </Routes>
   );
 };

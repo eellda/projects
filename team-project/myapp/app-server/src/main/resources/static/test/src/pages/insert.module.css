@@ -25,7 +25,7 @@
   position: relative;
   width: 1080px;
   height: 640px;
-
+  /* padding: 20px; */
   align-items: center;
   justify-content: center;
   background: transparent;
@@ -35,6 +35,36 @@
   box-shadow: 0 0 30px rgba(116, 114, 114, 0.5);
   top: auto;
   left: auto;
+}
+
+.wrapperForm {
+  position: relative;
+  width: 1080px;
+  height: 640px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px solid rgba(175, 172, 172, 0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 30px rgba(116, 114, 114, 0.5);
+  top: auto;
+  left: auto;
+}
+
+.formB {
+  align-items: center;
+  justify-content: center;
+}
+
+.formButton {
+  display: inline-block;
+}
+
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .formBox {

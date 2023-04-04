@@ -6,6 +6,8 @@ import telegram from "../img/telegram.png";
 import Discord from "../img/Discord.png";
 import index from "./index.module.css";
 import insert from "./insert.module.css";
+import play from "../img/playimage.png";
+import blog from "../img/blogimage.png";
 
 const Login = () => {
   return (
@@ -57,17 +59,17 @@ const Login = () => {
         <div className={insert.body}>
           <div className={insert.wrapper}>
             <div className={insert.formBox}>
-              <h2 className={insert.formBoxH2}>insert</h2>
+              <h2 className={insert.formBoxH2}>글쓰깅~</h2>
               <form action="#">
                 <div className={insert.inputBox}>
-                  <span className={insert.inputBoxIcon}>🐣</span>
-                  <input type="email" required />
-                  <label>Email</label>
+                  <span className={insert.inputBoxIcon}>
+                    <img src={play} alt={play}></img>
+                  </span>
                 </div>
                 <div className={insert.inputBox}>
-                  <span className={insert.inputBoxIcon}>🦄</span>
-                  <input type="password" required />
-                  <label>Password</label>
+                  <span className={insert.inputBoxIcon}>
+                    <img src={blog} alt={blog}></img>
+                  </span>
                 </div>
               </form>
             </div>

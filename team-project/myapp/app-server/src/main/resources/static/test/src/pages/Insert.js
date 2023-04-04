@@ -60,18 +60,27 @@ const Login = () => {
           <div className={insert.wrapper}>
             <div className={insert.formBox}>
               <h2 className={insert.formBoxH2}>글쓰깅~</h2>
-              <form action="#">
-                <div className={insert.inputBox}>
-                  <span className={insert.inputBoxIcon}>
-                    <img src={play} alt={play}></img>
-                  </span>
-                </div>
-                <div className={insert.inputBox}>
-                  <span className={insert.inputBoxIcon}>
-                    <img src={blog} alt={blog}></img>
-                  </span>
-                </div>
-              </form>
+
+              <div className={insert.inputBox}>
+                <span className={insert.inputBoxIcon}>
+                  <img
+                    className={insert.inputBoxIconI}
+                    src={play}
+                    alt={play}
+                  ></img>
+                  community
+                </span>
+              </div>
+              <div className={insert.inputBox}>
+                <span className={insert.inputBoxIcon}>
+                  <img
+                    className={insert.inputBoxIconI}
+                    src={blog}
+                    alt={blog}
+                  ></img>
+                  community
+                </span>
+              </div>
             </div>
           </div>
         </div>

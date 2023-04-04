@@ -52,14 +52,15 @@
 .inputBox {
   position: relative;
   float: left;
+  /* margin: auto; */
   /* vertical-align: middle; */
   /* text-align: center; */
-  width: 45%;
-  height: 50px;
+  width: 40%;
+  /* height: 50px; */
   /* top: 50%; */
   /* left: 50%; */
   /* border-bottom: 2px solid #162938; */
-  margin: 50px 0;
+  margin: 48px 49px;
 }
 
 .inputBoxLabel {
@@ -93,8 +94,18 @@
 .inputBoxIcon {
   /* background: url(../img/playimage.png); */
   position: absolute;
+  margin: auto;
+  text-align: center;
   right: 8px;
   font-size: 1.2em;
   color: #162938;
   line-height: 57px;
+  border: 2px solid rgba(175, 172, 172, 0.5);
+  box-shadow: 0 0 30px rgba(116, 114, 114, 0.5);
+  border-radius: 20px;
+}
+
+.inputBoxIconI {
+  display: inline-block;
+  vertical-align: middle;
 }

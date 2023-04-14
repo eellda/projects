@@ -6,26 +6,37 @@
 
   <resultMap type="member" id="memberMap">
     <id column="member_id" property="no"/>
-    <result column="name" property="name"/>
     <result column="email" property="email"/>
+    <result column="name" property="name"/>
     <result column="tel" property="tel"/>
+    <result column="nickname" property="nickname"/>
+    <result column="introduce" property="introduce"/>
+    <result column="photo" property="photo"/>
     <result column="created_date" property="createdDate"/>
+    <result column="state" property="state"/>
+    <result column="auth" property="auth"/>
   </resultMap>
 
   <insert id="insert" parameterType="member" 
           useGeneratedKeys="true" keyProperty="no" keyColumn="member_id">
-    insert into app_member(name, email, pwd, tel)
-    values(#{name}, #{email}, sha2(#{password},256), #{tel})
+    insert into gh_member(email, pwd, name, tel, nickname, introduce, photo, state, auth) 
+    values(#{email}, sha2(#{password}, 256), #{name}, #{tel}, #{nickname}, #{introduce}, #{photo}, #{state}, #{auth})
   </insert>
 
   <select id="findAll" resultMap="memberMap">
     select 
       member_id, 
-      name, 
       email, 
-      created_date 
+      name, 
+      tel, 
+      nickname, 
+      introduce, 
+      photo, 
+      created_date, 
+      state, 
+      auth 
     from 
-      app_member
+      gh_member 
     order by 
       member_id desc
   </select>
@@ -33,27 +44,55 @@
   <select id="findByNo" parameterType="int" resultMap="memberMap">
     select 
       member_id, 
-      name, 
       email, 
-      tel,
-      created_date 
+      name, 
+      tel, 
+      nickname, 
+      introduce, 
+      photo, 
+      created_date, 
+      state, 
+      auth 
     from 
-      app_member
+      gh_member 
     where 
       member_id=#{no}
   </select>
   
+    <select id="findByEmailAndPassword" parameterType="map" resultMap="memberMap">
+    select
+      member_id, 
+      email, 
+      name, 
+      tel, 
+      nickname, 
+      introduce, 
+      photo, 
+      created_date, 
+      state, 
+      auth 
+    from 
+      gh_member 
+    where 
+      email = #{email} and pwd = sha2(#{password},256)
+  </select>
+  
   <update id="update" parameterType="member">
-    update app_member set
-      name=#{name}, 
+    update gh_member set
       email=#{email}, 
-      pwd=sha2(#{password},256), 
-      tel=#{tel}
+      pwd=#{password}, 
+      name=#{name}, 
+      tel=#{tel}, 
+      nickname=#{nickname}, 
+      introduce=#{introduce}, 
+      photo=#{photo}, 
+      state=#{state}, 
+      auth=#{auth} 
     where member_id=#{no}
   </update>
   
   <delete id="delete" parameterType="int">
-    delete from app_member
+    delete from gh_member
     where member_id=#{no}
   </delete>
 </mapper>

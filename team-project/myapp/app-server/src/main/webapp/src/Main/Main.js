@@ -1,13 +1,17 @@
-import "./home.css";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./main.css";
 
-const Home = () => {
+function Main() {
   return (
     <div className="main">
       <div className="body">
         <div className="cate">
           <ul className="list">
             <li className="hot-place">HOT 플레이스</li>
-            <li className="board">커뮤니티</li>
+            <Link to="/Board" style={{ textDecoration: "none" }}>
+              <li className="board">커뮤니티</li>
+            </Link>
           </ul>
           <ul className="list-best">
             <li>인기순</li>
@@ -44,6 +48,6 @@ const Home = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Home;
+export default Main;

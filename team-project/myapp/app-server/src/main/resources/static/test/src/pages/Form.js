@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
+// import FloatingLabel from "react-bootstrap/FloatingLabel";
 
 import index from "./index.module.css";
 import insert from "./insert.module.css";
@@ -105,6 +105,9 @@ const Form1 = () => {
 
               <Button variant="danger" type="submit" style={{ width: "100px" }}>
                 작성
+              </Button>
+              <Button variant="danger" type="cancel" style={{ width: "100px" }}>
+                이전
               </Button>
             </Form>
           </div>

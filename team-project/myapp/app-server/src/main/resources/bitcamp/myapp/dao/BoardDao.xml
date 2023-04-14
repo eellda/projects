@@ -28,7 +28,7 @@
 
   <insert id="insert" parameterType="board" 
           useGeneratedKeys="true" keyColumn="board_id" keyProperty="no">
-    insert into app_board(title, content, writer) 
+    insert into gh_board(title, content, writer) 
     values(#{title}, #{content}, #{writer.no})
   </insert>
 
@@ -41,8 +41,8 @@
       b.view_cnt,
       m.name 
     from 
-      app_board b
-      inner join app_member m on b.writer = m.member_id
+      gh_board b
+      inner join gh_member m on b.writer = m.member_id
     <if test="keyword != '' and keyword != null">
     where 
       b.title like(concat('%',#{keyword},'%'))
@@ -58,7 +58,7 @@
       b.title, 
       b.content,
       b.writer, 
-      (select name from app_member where member_id = b.writer) name, 
+      (select name from gh_member where member_id = b.writer) name, 
       b.created_date, 
       b.view_cnt,
       bf.boardfile_id,
@@ -66,27 +66,27 @@
       bf.origin_filename,
       bf.mime_type
     from 
-      app_board b
-      left outer join app_board_file bf on b.board_id = bf.board_id
+      gh_board b
+      left outer join gh_board_file bf on b.board_id = bf.board_id
     where 
       b.board_id=#{no}
   </select>
   
   <update id="increaseViewCount" parameterType="int">
-    update app_board set
+    update gh_board set
       view_cnt = view_cnt + 1
     where board_id=#{maumdaerohaedodoi}
   </update>
   
   <update id="update" parameterType="board">
-    update app_board set 
+    update gh_board set 
       title=#{title}, 
       content=#{content} 
     where board_id=#{no}
   </update>
   
   <delete id="delete" parameterType="int">
-    delete from app_board 
+    delete from gh_board 
     where board_id=#{no}
   </delete>
 </mapper>

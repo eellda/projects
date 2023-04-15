@@ -1,5 +1,6 @@
 package bitcamp.goodhere.controller;
 
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,19 @@ public class ReplyController {
 
   @GetMapping
   public Object list() {
+    System.out.println("==>");
     return new RestResult()
         .setStatus(RestStatus.SUCCESS)
         .setData(replyService.list());
+  }
+
+  @GetMapping("{no}")
+  public List<Reply> view(@PathVariable int no) throws Exception {
+    Reply reply = new Reply();
+    reply.setNo(no);
+
+    return replyService.getList(reply);
+
   }
 
   @DeleteMapping("{no}")

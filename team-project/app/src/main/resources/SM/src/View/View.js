@@ -5,16 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./view.css";
 
-// const navigate = useNavigate();
-
 const View = () => {
   const baseUrl = "http://localhost";
   const { no } = useParams();
   const [content, setContent] = useState({ data: null });
+  const [comments, setComments] = useState([]);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const prevNoRef = useRef(null);
+  const commentInputRef = useRef();
 
   const handleDelete = () => {
     axios({
@@ -41,7 +42,6 @@ const View = () => {
 
   useEffect(() => {
     if (prevNoRef.current !== no) {
-      // 현재 no와 이전 no가 다를 경우에만 API 요청을 보냅니다.
       axios({
         method: "GET",
         url: `${baseUrl}/web/boards/${no}`,
@@ -57,13 +57,62 @@ const View = () => {
           setIsLoading(false);
           setError(error);
         });
+
+      axios({
+        method: "GET",
+        url: `${baseUrl}/web/replys/${no}`,
+        cache: true,
+        withCredentials: true,
+      })
+        .then((response) => {
+          console.log(response.data);
+          setComments(response.data);
+        })
+        .catch((error) => {
+          setError(error);
+        });
+
       prevNoRef.current = no; // 현재 no를 이전 no로 저장합니다.
     } else {
       setIsLoading(false); // 현재 no와 이전 no가 동일하다면 로딩을 종료합니다.
     }
   }, [no]);
 
-  // console.log(content);
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: `${baseUrl}/web/auth/user`,
+      withCredentials: true,
+    })
+      .then((response) => {
+        console.log(response.data);
+        setUser(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setError(error);
+      });
+  }, []);
+
+  // useEffect(() => {
+  //   axios({
+  //     method: "GET",
+  //     url: `${baseUrl}/web/auth/user`,
+  //     withCredentials: true,
+  //   })
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setUser(response.data);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       setError(error);
+  //     });
+  // }, []);
+
+  console.log(user);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -79,20 +128,48 @@ const View = () => {
 
   const boardTypeValue = () => {
     switch (content.data?.boardTypeId) {
-      case 0:
-        return "자유";
       case 1:
-        return "Q & A";
+        return "자유";
       case 2:
-        return "맛집&이색카페";
+        return "Q & A";
       case 3:
-        return "여행 정보";
+        return "맛집&이색카페";
       case 4:
+        return "여행 정보";
+      case 5:
         return "여행 동행";
 
       default:
         break;
     }
+  };
+
+  const handleComment = () => {
+    // console.log("호출");
+    const enteredContent = commentInputRef.current.value;
+    console.log(enteredContent);
+    const data = {
+      boardNo: content.data.no,
+      nickname: user.data.nickname,
+      content: enteredContent,
+    };
+    console.log(data);
+
+    axios({
+      method: "POST",
+      url: baseUrl + `/web/replys`,
+      params: {
+        boardNo: content.data.no,
+        content: enteredContent,
+      },
+      withCredentials: true,
+    })
+      .then((response) => {
+        console.log(response); // 성공적으로 요청이 완료되면 응답 결과를 출력
+      })
+      .catch((error) => {
+        console.log(error); // 요청이 실패하면 에러를 출력
+      });
   };
 
   return (
@@ -134,15 +211,6 @@ const View = () => {
                     }
                     return null;
                   })}
-                {/* {content.data?.content.split("\n").map((line, index) => {
-                  return (
-                    <React.Fragment key={index}>
-                      <span style={{ fontSize: "20px" }}>{line}</span>
-                      <br />
-                    </React.Fragment>
-                  );
-                })} */}
-                {/* <span dangerouslySetInnerHTML=({_html : contents }}</span> */}
                 <div
                   dangerouslySetInnerHTML={{ __html: content.data?.content }}
                 />
@@ -156,6 +224,37 @@ const View = () => {
             </Link>
             <button onClick={handleBoard}>목록</button>
           </div>
+          <div className="view-comment-list">
+            {comments.map((comment, index) => (
+              <div key={index} className="comment">
+                <div className="comment-profile">
+                  {/* <img className="comment-profile-image" src={comment.writer.profileImageUrl} alt={comment.writer.nickname} /> */}
+                  <span className="comment-profile-nickname">
+                    {comment.writer.nickname}
+                  </span>
+                  <span className="comment-profile-date">
+                    {comment.createdDate}
+                  </span>
+                </div>
+                <div className="comment-content">{comment.content}</div>
+              </div>
+            ))}
+          </div>
+          <div className="view-comment-main">
+            <div className="view-comment-nickname">{user.data.nickname}</div>
+            <textarea
+              className="view-comment-content"
+              ref={commentInputRef}
+              placeholder="댓글을 남겨보세요"
+            ></textarea>
+            <button
+              className="view-comment-insert"
+              type="button"
+              onClick={handleComment}
+            >
+              등록
+            </button>
+          </div>
         </header>
       </section>
     </div>
@@ -163,3 +262,28 @@ const View = () => {
 };
 
 export default View;
+
+// 병렬 요청
+// useEffect(() => {
+//   const fetchContent = axios.get(`${baseUrl}/web/boards/${no}`, {
+//     cache: true,
+//     withCredentials: true,
+//   });
+
+//   const fetchUser = axios.get(`${baseUrl}/web/users/current`, {
+//     withCredentials: true,
+//   });
+
+//   Promise.all([fetchContent, fetchUser])
+//     .then((responses) => {
+//       const contentResponse = responses[0];
+//       const userResponse = responses[1];
+//       setContent(contentResponse.data);
+//       setUser(userResponse.data);
+//       setIsLoading(false);
+//     })
+//     .catch((error) => {
+//       setIsLoading(false);
+//       setError(error);
+//     });
+// }, [no]);

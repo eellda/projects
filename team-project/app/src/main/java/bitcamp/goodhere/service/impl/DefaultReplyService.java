@@ -31,6 +31,12 @@ public class DefaultReplyService implements ReplyService {
     return r;
   }
 
+  @Override
+  public List<Reply> getList(Reply reply) {
+
+    return replyDao.findList(reply);
+  }
+
   @Transactional
   @Override
   public void delete(int no) {

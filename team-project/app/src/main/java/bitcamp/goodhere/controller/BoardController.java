@@ -96,6 +96,7 @@ public class BoardController {
   @GetMapping("{no}")
   public Object view(@PathVariable int no) {
     Board board = boardService.get(no);
+    System.out.println(board);
     if (board != null) {
       return new RestResult()
           .setStatus(RestStatus.SUCCESS)

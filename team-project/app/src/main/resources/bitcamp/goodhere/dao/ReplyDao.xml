@@ -50,6 +50,21 @@
       c.comment_id=#{no}
   </select>
   
+    <select id="findList" parameterType="int" resultMap="replyMap">
+    select
+    c.comment_id,
+    c.content,
+    c.board_id,
+    c.writer,
+    c.created_date,
+    m.nickname
+    from 
+      gh_comment c
+      inner join gh_member m on c.writer = m.member_id
+    where 
+      board_id=#{no}
+  </select>
+  
   <delete id="delete" parameterType="int">
     delete from gh_comment
     where comment_id=#{no}

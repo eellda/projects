@@ -9,6 +9,7 @@ public interface ReplyDao {
   int insert(Reply reply);
   List<Reply> findAll();
   Reply findByNo(int no);
+  List<Reply> findList(Reply reply);
   int delete(int no);
   int deleteOfBoard(int boardNo);
 }

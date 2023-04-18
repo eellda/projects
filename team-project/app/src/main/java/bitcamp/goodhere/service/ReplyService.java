@@ -9,4 +9,5 @@ public interface ReplyService {
   Reply get(int no);
   List<Reply> getList(Reply reply);
   void delete(int no);
+  void update(Reply reply);
 }

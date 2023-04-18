@@ -10,12 +10,14 @@ const View = () => {
   const { no } = useParams();
   const [content, setContent] = useState({ data: null });
   const [comments, setComments] = useState([]);
+  const [enteredContent, setEnteredContent] = useState("");
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const prevNoRef = useRef(null);
   const commentInputRef = useRef();
+  const [editingComment, setEditingComment] = useState(null);
 
   const handleDelete = () => {
     axios({
@@ -95,25 +97,6 @@ const View = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   axios({
-  //     method: "GET",
-  //     url: `${baseUrl}/web/auth/user`,
-  //     withCredentials: true,
-  //   })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setUser(response.data);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       setError(error);
-  //     });
-  // }, []);
-
-  console.log(user);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -144,17 +127,13 @@ const View = () => {
     }
   };
 
-  const handleComment = () => {
-    // console.log("호출");
-    const enteredContent = commentInputRef.current.value;
-    console.log(enteredContent);
-    const data = {
-      boardNo: content.data.no,
-      nickname: user.data.nickname,
-      content: enteredContent,
-    };
-    console.log(data);
+  const handleChange = (event) => {
+    setEnteredContent(event.target.value);
 
+    console.log(setEnteredContent);
+  };
+
+  const handleComment = () => {
     axios({
       method: "POST",
       url: baseUrl + `/web/replys`,
@@ -165,12 +144,71 @@ const View = () => {
       withCredentials: true,
     })
       .then((response) => {
-        console.log(response); // 성공적으로 요청이 완료되면 응답 결과를 출력
+        setEnteredContent("");
+        axios({
+          method: "GET",
+          url: `${baseUrl}/web/replys/${no}`,
+          cache: true,
+          withCredentials: true,
+        })
+          .then((response) => {
+            console.log(response.data);
+            setComments(response.data);
+          })
+          .catch((error) => {
+            setError(error);
+          });
       })
       .catch((error) => {
         console.log(error); // 요청이 실패하면 에러를 출력
       });
   };
+
+  // 댓글 수정
+  const handleUpdateComment = (id) => {
+    axios({
+      method: "PUT",
+      url: `${baseUrl}/web/replys/${id}`,
+      withCredentials: true,
+      params: {
+        content: editingComment.content,
+      },
+    })
+      .then((response) => {
+        // 댓글 업데이트 성공 시, comments 배열에서 해당 댓글을 찾아 업데이트한다.
+        const updatedComments = comments.map((comment) => {
+          if (comment.no === id) {
+            // 해당 댓글을 찾으면 업데이트한다.
+            return { ...comment, content: editingComment.content };
+          }
+          return comment; // 해당 댓글이 아니면 그대로 반환한다.
+        });
+        setComments(updatedComments); // 변경된 comments 배열을 설정한다.
+        setEditingComment(null); // editingComment를 초기화한다.
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
+  const handleDeleteComment = (id) => {
+    axios({
+      method: "DELETE",
+      url: `${baseUrl}/web/replys/${id}`,
+      withCredentials: true,
+    })
+      .then(() => {
+        console.log("success");
+        const updatedComments = comments.filter((comment) => comment.no !== id);
+        setComments(updatedComments);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
+  // console.log(comments.writer.no);
+  // console.log(user.data);
 
   return (
     <div className="view-main">
@@ -217,44 +255,128 @@ const View = () => {
               </div>
             </div>
           </div>
-          <div className="view-content-bottom">
-            <button onClick={handleDelete}>삭제</button>
-            <Link to={`/FormUpdate/${content.data?.no}`}>
-              <button>수정</button>
-            </Link>
-            <button onClick={handleBoard}>목록</button>
-          </div>
+          {user.data &&
+          content.data &&
+          user.data.no === content.data.writer.no ? (
+            <div className="view-content-bottom">
+              <button onClick={handleDelete}>삭제</button>
+              <Link to={`/FormUpdate/${content.data?.no}`}>
+                <button>수정</button>
+              </Link>
+              <button onClick={handleBoard}>목록</button>
+            </div>
+          ) : (
+            <div className="view-content-bottom">
+              <button onClick={handleBoard}>목록</button>
+            </div>
+          )}
+
           <div className="view-comment-list">
-            {comments.map((comment, index) => (
-              <div key={index} className="comment">
-                <div className="comment-profile">
-                  {/* <img className="comment-profile-image" src={comment.writer.profileImageUrl} alt={comment.writer.nickname} /> */}
-                  <span className="comment-profile-nickname">
-                    {comment.writer.nickname}
-                  </span>
-                  <span className="comment-profile-date">
-                    {comment.createdDate}
-                  </span>
-                </div>
-                <div className="comment-content">{comment.content}</div>
+            {comments.map((comment) => (
+              <div key={comment.no} className="comment" comment={comment}>
+                {editingComment && editingComment.no === comment.no ? (
+                  // 수정할 수 있는 입력 폼
+                  <div className="comment-update">
+                    <div className="view-comment-nickname">
+                      {user.data.nickname}
+                    </div>
+                    <textarea
+                      className="comment-update-text"
+                      value={editingComment.content}
+                      onChange={(e) =>
+                        setEditingComment({
+                          ...editingComment,
+                          content: e.target.value,
+                        })
+                      }
+                    />
+
+                    <div className="comment-update-btns">
+                      <button
+                        className="comment-update-cancel-btn"
+                        type="button"
+                        onClick={() => setEditingComment(null)}
+                      >
+                        취소
+                      </button>
+                      <button
+                        className="comment-update-btn"
+                        type="button"
+                        onClick={() => handleUpdateComment(comment.no)}
+                      >
+                        수정
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // 기존 댓글
+                  <div>
+                    <div className="comment-profile">
+                      <span className="comment-profile-nickname">
+                        {comment.writer.nickname}
+                      </span>
+                      <span className="comment-profile-date">
+                        {comment.createdDate}
+                      </span>
+                    </div>
+                    <div className="comment-content">{comment.content}</div>
+                    {user.data &&
+                    comment.writer &&
+                    user.data.no === comment.writer.no ? (
+                      <div className="btns">
+                        <button
+                          className="comment-btn_delete"
+                          onClick={() => handleDeleteComment(comment.no)}
+                        >
+                          삭제
+                        </button>
+                        <button
+                          className="comment-btn_update"
+                          onClick={() => setEditingComment(comment)}
+                        >
+                          수정
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             ))}
           </div>
-          <div className="view-comment-main">
-            <div className="view-comment-nickname">{user.data.nickname}</div>
-            <textarea
-              className="view-comment-content"
-              ref={commentInputRef}
-              placeholder="댓글을 남겨보세요"
-            ></textarea>
-            <button
-              className="view-comment-insert"
-              type="button"
-              onClick={handleComment}
-            >
-              등록
-            </button>
-          </div>
+
+          {user.data !== null ? (
+            <div className="view-comment-main">
+              <div className="view-comment-nickname">{user.data.nickname}</div>
+              <textarea
+                className="view-comment-content"
+                ref={commentInputRef}
+                value={enteredContent}
+                onChange={handleChange}
+                placeholder="댓글을 남겨보세요"
+              ></textarea>
+              <button
+                className="view-comment-insert"
+                type="button"
+                onClick={handleComment}
+              >
+                등록
+              </button>
+            </div>
+          ) : (
+            <div className="view-comment-main">
+              <div className="view-comment-nickname">
+                로그인 후 이용 가능합니다
+              </div>
+              <textarea
+                className="view-comment-content"
+                placeholder="로그인후 댓글을 남겨보세요!"
+                onClick={() => {
+                  navigate("/Login");
+                }}
+                readOnly
+              ></textarea>
+            </div>
+          )}
         </header>
       </section>
     </div>
@@ -287,3 +409,8 @@ export default View;
 //       setError(error);
 //     });
 // }, [no]);
+
+{
+  /* <div className="comment-profile">
+<img className="comment-profile-image" src={comment.writer.profileImageUrl} alt={comment.writer.nickname} /> */
+}

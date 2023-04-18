@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import bitcamp.goodhere.service.ReplyService;
@@ -41,9 +42,6 @@ public class ReplyController {
     writer.setNo(loginUser.getNo());
     reply.setWriter(writer);
 
-    //    reply.setWriterNo(loginUser.getNo());
-    //    reply.setWriter(writer);
-
     replyService.add(reply);
 
     return new RestResult().setStatus(RestStatus.SUCCESS);
@@ -62,9 +60,29 @@ public class ReplyController {
   public List<Reply> view(@PathVariable int no) throws Exception {
     Reply reply = new Reply();
     reply.setNo(no);
-
+    
     return replyService.getList(reply);
+  }
 
+  @PutMapping("{no}")
+  public Object update(
+      @PathVariable int no,
+      Reply reply,
+      HttpSession session) throws Exception {
+
+    Member loginUser = (Member) session.getAttribute("loginUser");
+    reply.setNo(no);
+
+    Reply old = replyService.get(reply.getNo());
+    if (old.getWriter().getNo() != loginUser.getNo()) {
+      return new RestResult()
+          .setStatus(RestStatus.FAILURE)
+          .setErrorCode(ErrorCode.rest.UNAUTHORIZED)
+          .setData("권한이 없습니다.");
+    }
+
+    replyService.update(reply);
+    return new RestResult().setStatus(RestStatus.SUCCESS);
   }
 
   @DeleteMapping("{no}")
@@ -85,3 +103,5 @@ public class ReplyController {
         .setStatus(RestStatus.SUCCESS);
   }
 }
+
+

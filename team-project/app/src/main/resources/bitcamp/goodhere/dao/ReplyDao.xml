@@ -19,7 +19,7 @@
 
   <insert id="insert" parameterType="reply" 
           useGeneratedKeys="true" keyColumn="comment_id" keyProperty="no">
-    insert into gh_comment(board_id, content, writer) 
+    insert into gh_parent_comment (board_id, content, writer) 
     values(#{boardNo}, #{content}, #{writer.no})
   </insert>
   
@@ -32,7 +32,7 @@
       c.created_date, 
       m.nickname
     from 
-      gh_comment c
+      gh_parent_comment c
       inner join gh_member m on c.writer = m.member_id
     order by 
       c.comment_id desc
@@ -45,7 +45,7 @@
       c.writer, 
       c.created_date
     from 
-      gh_comment c
+      gh_parent_comment c
     where 
       c.comment_id=#{no}
   </select>
@@ -59,19 +59,25 @@
     c.created_date,
     m.nickname
     from 
-      gh_comment c
+      gh_parent_comment c
       inner join gh_member m on c.writer = m.member_id
     where 
       board_id=#{no}
   </select>
   
+    <update id="update" parameterType="board">
+    update gh_parent_comment set 
+      content=#{content} 
+    where comment_id=#{no}
+  </update>
+  
   <delete id="delete" parameterType="int">
-    delete from gh_comment
+    delete from gh_parent_comment
     where comment_id=#{no}
   </delete>
 
   <delete id="deleteOfBoard" parameterType="int">
-    delete from gh_comment 
+    delete from gh_parent_comment 
     where board_id=#{no}
   </delete>
 </mapper>

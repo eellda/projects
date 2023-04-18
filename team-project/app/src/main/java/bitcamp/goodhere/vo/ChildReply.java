@@ -6,13 +6,12 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import lombok.Data;
 
 @Data
-public class Reply {
+public class ChildReply {
   private int no;
-  private String content;
-  private int boardNo;
+  private int parentCommentNo;
   private Member writer;
-  private int writerNo;
   private String writerName;
+  private String content;
 
   @JsonFormat(
       shape = Shape.STRING,

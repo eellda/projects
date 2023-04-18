@@ -27,14 +27,20 @@ public class DefaultReplyService implements ReplyService {
   @Override
   public Reply get(int no) {
     Reply r = replyDao.findByNo(no);
-
     return r;
   }
 
   @Override
   public List<Reply> getList(Reply reply) {
-
     return replyDao.findList(reply);
+  }
+
+  @Transactional
+  @Override
+  public void update(Reply reply) {
+    if (replyDao.update(reply) == 0) {
+      throw new RuntimeException("댓글이 존재하지 않습니다!");
+    }    
   }
 
   @Transactional

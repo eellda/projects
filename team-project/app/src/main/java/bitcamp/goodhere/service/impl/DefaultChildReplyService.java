@@ -19,6 +19,12 @@ public class DefaultChildReplyService implements ChildReplyService {
   }
 
   @Override
+  public ChildReply get(int no) {
+    ChildReply cr = childReplyDao.findByNo(no);
+    return cr;
+  }
+
+  @Override
   public List<ChildReply> list() {
     return childReplyDao.findAll();
   }
@@ -51,4 +57,6 @@ public class DefaultChildReplyService implements ChildReplyService {
       throw new RuntimeException("댓글이 존재하지 않습니다.");
     }
   }
+
+
 }

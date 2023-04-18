@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import bitcamp.goodhere.service.ChildReplyService;
 import bitcamp.goodhere.vo.ChildReply;
 import bitcamp.goodhere.vo.Member;
+import bitcamp.util.ErrorCode;
 import bitcamp.util.RestResult;
 import bitcamp.util.RestStatus;
 import jakarta.servlet.http.HttpSession;
@@ -58,6 +60,32 @@ public class ChildReplyController {
     childReply.setNo(no);
 
     return childReplyService.getList(childReply);
+  }
+
+  @PutMapping("{no}")
+  public Object update(
+      @PathVariable int no,
+      ChildReply childReply,
+      HttpSession session) throws Exception {
+
+    //    Member loginUser = (Member) session.getAttribute("loginUser");
+    //    childReply.setNo(no);
+    Member writer = new Member();
+    //    writer.setNo(loginUser.getNo());
+    writer.setNo(1);
+    childReply.setWriter(writer);
+
+    System.out.println("update controller 호출");
+    ChildReply old = childReplyService.get(childReply.getNo());
+    if (old.getWriter().getNo() != writer.getNo()) {
+      return new RestResult()
+          .setStatus(RestStatus.FAILURE)
+          .setErrorCode(ErrorCode.rest.UNAUTHORIZED)
+          .setData("권한이 없습니다.");
+    }
+
+    childReplyService.update(childReply);
+    return new RestResult().setStatus(RestStatus.SUCCESS);
   }
 
 }

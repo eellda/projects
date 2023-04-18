@@ -22,6 +22,18 @@ insert into gh_child_comment (parent_comment_id, content, writer)
 values(#{parentCommentNo}, #{content}, #{writer.no})
 </insert>
 
+<select id="findByNo" parameterType="int" resultMap="ChildReplyMap">
+  select
+    c.comment_id,
+    c.parent_comment_id,
+    c.content, 
+    c.writer
+  from 
+    gh_child_comment c
+  where 
+    c.comment_id=#{no}
+</select>
+
   <select id="findAll" resultMap="ChildReplyMap">
     select 
       c.comment_id,
@@ -53,9 +65,9 @@ where
   </select>
   
   <update id="update" parameterType="ChildReply">
-update gh_child_comment set 
-  content=#{content} 
-where comment_id=#{no}
+	update gh_child_comment set 
+	  content=#{content} 
+	where comment_id=#{no}
     </update>
     
   <delete id="delete" parameterType="int">

@@ -7,6 +7,7 @@ import bitcamp.goodhere.vo.ChildReply;
 @Mapper
 public interface ChildReplyDao {
   int insert(ChildReply childReply);
+  ChildReply findByNo(int no);
   List<ChildReply> findAll();
   List<ChildReply> findList(ChildReply childReply);
   int delete(int no);

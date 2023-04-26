@@ -1,9 +1,11 @@
 import React from "react";
 import "./sign.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 //----------------------------------회원가입--------------------------------------------
 function Sign() {
+  const navigate = useNavigate();
   const signUp = function () {
     const form = document.querySelector("#member-form");
     const formData = new FormData(form);
@@ -31,7 +33,7 @@ function Sign() {
       body: json,
     })
       .then((response) => {
-        console.log(json);
+        console.log(response);
         return response.json();
       })
       .then((result) => {
@@ -44,9 +46,11 @@ function Sign() {
         }
       })
       .catch((exception) => {
-        alert("입력 중 오류 발생!");
+        console.log("입력 중 오류 발생!");
         console.log(exception);
       });
+    navigate("/Main");
+    // window.location.href = "http://localhost:3000/Main";
   };
 
   //----------------------------------이메일체크--------------------------------------------
